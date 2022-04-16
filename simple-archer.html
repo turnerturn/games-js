@@ -1,0 +1,174 @@
+                                                
+                                                <!-- this script is provided by www.html5freecode.com coded by: Kerixa Inc. -->
+<!-- This Script is from www.html5freecode.com, Coded by: Kerixa Inc-->
+<div style="color: #B51717"><strong>Click as fast as you can!</strong></div>
+<canvas id="myCanvas" width="400" height="230" onmousemove="gun(event)" onclick="shoot(event)"></canvas>
+<audio controls id="sh1" style="display:none">
+	<source src="http://www.html5freecode.com/files/html5-canvas-shoot.ogg" type="audio/ogg">
+	<source src="http://www.html5freecode.com/files/html5-canvas-shoot.mp3" type="audio/mpeg">
+	<p>The browser doesn't support the audio element.</p>
+</audio>
+<audio controls id="sh2" style="display:none">
+	<source src="http://www.html5freecode.com/files/html5-canvas-shoot.ogg" type="audio/ogg">
+	<source src="http://www.html5freecode.com/files/html5-canvas-shoot.mp3" type="audio/mpeg">
+	<p>The browser doesn't support the audio element.</p>
+</audio>
+<audio controls id="sh3" style="display:none">
+	<source src="http://www.html5freecode.com/files/html5-canvas-shoot.ogg" type="audio/ogg">
+	<source src="http://www.html5freecode.com/files/html5-canvas-shoot.mp3" type="audio/mpeg">
+	<p>The browser doesn't support the audio element.</p>
+</audio>
+<audio controls id="sh4" style="display:none">
+	<source src="http://www.html5freecode.com/files/html5-canvas-shoot.ogg" type="audio/ogg">
+	<source src="http://www.html5freecode.com/files/html5-canvas-shoot.mp3" type="audio/mpeg">
+	<p>The browser doesn't support the audio element.</p>
+</audio>
+
+<script>
+    var cnv = document.getElementById('myCanvas')
+    var ctx = cnv.getContext('2d')
+    var deg = Math.PI/180
+	var spx, shoots=0, ply=1
+	sh=new Array;
+	xO=new Array();yO=new Array()
+	xn=new Array();yn=new Array()
+	xi=new Array();yi=new Array()
+		
+	spx=10
+    ctx.beginPath()
+    ctx.shadowBlur = 3
+    ctx.strokeStyle= "blue"	
+	ctx.lineWidth= 5
+	ctx.strokeRect(10,10,380,210)
+   	ctx.closePath()
+
+   	gun(null)
+
+function gun(event){
+	var bb, x1, y1,x,y
+	if (event!=null){
+		bb = cnv.getBoundingClientRect()
+		x1 = (event.clientX-bb.left) * (cnv.width/bb.width)
+		y1 = (event.clientY-bb.top) * (cnv.height/bb.height)
+	}else{
+		x1=250
+		y1=115
+	}
+	
+	var a,b,AA,BB,CC,Del, x0=10,y0=115,r=30, teta,fi,fi2,dx,dy
+	
+	ctx.beginPath()
+	ctx.clearRect(0,15,r+15,150)
+    ctx.strokeStyle= "blue"	
+	ctx.lineWidth=5	
+	ctx.stroke()
+	ctx.strokeRect(10,10,380,210)	
+	ctx.closePath()
+
+	ctx.translate(x0,y0)
+	x1=x1-x0
+	y1=y1-y0
+	x0=0
+	y0=0
+	a= (y1-y0)/(x1-x0)
+	b= -a*x0 + y0
+	AA= Math.pow(a,2)+1
+	BB= 2*a*b
+	CC= Math.pow(b,2)-Math.pow(r,2)
+	Del= Math.pow(BB,2) - 4*AA*CC
+	x=(-BB + Math.sqrt(Del))/(2*AA)
+	y= a*x + b
+	teta= Math.atan(y/x)
+	ctx.beginPath()
+	ctx.moveTo(0,0)
+	ctx.lineTo(x,y)
+    ctx.strokeStyle= "darkblue"	
+	ctx.lineWidth=1.5		
+	ctx.stroke()
+	ctx.closePath()
+	
+	ctx.beginPath()
+	ctx.rotate(teta)
+	ctx.moveTo(r,0)	
+	ctx.lineTo(r-6,6)
+	ctx.moveTo(r,0)
+	ctx.lineTo(r-6,-6)	
+	ctx.stroke()
+	ctx.closePath()
+	ctx.rotate(-teta)
+	
+	ctx.beginPath()	
+	ctx.arc(x0,y0,r,teta+45*deg,teta-45*deg,true)
+	ctx.lineTo(0,0)
+	ctx.closePath()		
+    ctx.strokeStyle= "brown"	
+	ctx.lineWidth=2	
+	ctx.stroke()
+	ctx.setTransform(1, 0, 0, 1, 0, 0)	
+}
+
+function shoot(event){
+	var bb, x1, y1
+	bb = cnv.getBoundingClientRect()
+	x1 = (event.clientX-bb.left) * (cnv.width/bb.width)
+	y1 = (event.clientY-bb.top) * (cnv.height/bb.height)
+	xO.push(0)
+	yO.push(0)
+	xn.push(0)
+	yn.push(0)
+	xi.push(x1)
+	yi.push(y1)
+	document.getElementById('sh'+ply).play()
+	ply++
+	if(ply==5)ply=1	
+	shoots++
+	if (shoots==1) sh.push(setInterval(shootOnce, 33))
+}
+
+function shootOnce(){
+	var a,b,AA,BB,CC,Del, x0=10,y0=115,r=30, teta,fi,fi2,dx,dy
+	
+  for (ind=0;ind<shoots;ind++){		
+	x0=10;y0=115
+	ctx.translate(x0,y0)
+	x1= xi[ind]-x0
+	y1= yi[ind]-y0
+	x0= 0
+	y0= 0
+	a= (y1-y0)/(x1-x0)
+	b= -a*x0 + y0
+	if (xO[ind]!=0 && xO[ind]<360){
+		ctx.translate(xO[ind],yO[ind])
+		ctx.rotate(teta)
+		ctx.clearRect(-3,-6,r+3,12)
+		ctx.rotate(-teta)
+		ctx.setTransform(1, 0, 0, 1, 0, 0)
+	    ctx.strokeStyle= "blue"	
+		ctx.lineWidth=5			
+		ctx.strokeRect(10,10,380,210)	
+		ctx.translate(10,115)
+	}
+	
+	teta= Math.atan(y1/x1)
+	if (xO[ind]==0) 
+		xO[ind]=r*Math.cos(teta)+4 
+	else
+		if (xn[ind]<377 && yn[ind]>-102 && yn[ind]<102 ) xO[ind]+= spx*Math.cos(teta)
+	yO[ind]= a*xO[ind] + b
+	xn[ind]= xO[ind]+r*Math.cos(teta)
+	yn[ind]= a*xn[ind] + b
+	ctx.beginPath()
+	ctx.moveTo(xO[ind],yO[ind])
+	ctx.lineTo(xn[ind],yn[ind])
+    ctx.strokeStyle= "darkblue"	
+	ctx.lineWidth=1.5		
+	ctx.stroke()
+	ctx.closePath()
+	ctx.setTransform(1, 0, 0, 1, 0, 0)	
+  }
+}
+
+</script>
+<div style="text-align: left"><font face="Tahoma"><br><a target="_blank" href="http://www.html5freecode.com"><span style="font-size: 8pt; text-decoration: none">HTML5 Free Code</span></a></font></div>
+<a target='_blank' href='www.html5freecode.com' style='font-size: 8pt; text-decoration: none'>Html5 Free Codes</a>                                                
+                                            
